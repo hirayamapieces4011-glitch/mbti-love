@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>医者と結婚するなら何科のドクターが合う？｜無料・診療科相性診断【16タイプ】</title>
+<meta name="description" content="医者との結婚を考えているあなたへ。20問の質問に答えるだけで、あなたに相性の良い診療科ドクターがわかる！婚活の息抜きにどうぞ。">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --pink:#FF6B9D;--pink-light:#FFB3CE;--pink-pale:#FFF0F6;
+  --gold:#D4A843;--gold-light:#F5E4B0;
+  --bg:#FFFBFD;--white:#FFFFFF;--charcoal:#3D2B35;--gray:#8B7580;--gray-light:#EDE8EB;
+}
+body{background:var(--bg);color:var(--charcoal);font-family:'Noto Sans JP',sans-serif;min-height:100vh;}
+
+/* ヒーロー */
+.hero{background:linear-gradient(160deg,#FFE4EE 0%,#FFF0F6 40%,#FFF8E8 100%);padding:56px 24px 72px;text-align:center;position:relative;overflow:hidden;border-bottom:2px solid var(--pink-light);}
+.hero::before{content:'💍';position:absolute;font-size:200px;opacity:0.06;top:-20px;right:-20px;line-height:1;}
+.hero::after{content:'🏥';position:absolute;font-size:160px;opacity:0.06;bottom:-20px;left:-10px;line-height:1;}
+.hero h1{font-family:'Noto Serif JP',serif;font-size:clamp(24px,5vw,42px);color:var(--charcoal);line-height:1.5;margin-bottom:12px;}
+.hero h1 .accent{color:var(--pink);}
+.hero-sub{font-size:15px;color:var(--gray);line-height:1.8;max-width:480px;margin:0 auto 28px;}
+.btn-primary{display:inline-block;background:linear-gradient(135deg,var(--pink),#FF8FB5);color:#fff;padding:16px 48px;border-radius:40px;font-size:16px;font-weight:700;cursor:pointer;border:none;font-family:'Noto Sans JP',sans-serif;transition:transform 0.15s,box-shadow 0.15s;box-shadow:0 4px 20px rgba(255,107,157,0.35);}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(255,107,157,0.45);}
+
+.container{max-width:760px;margin:0 auto;padding:0 20px;}
+.screen{display:none;}
+.screen.active{display:block;}
+
+/* スタート */
+#screen-start{padding:40px 0 80px;}
+.features{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:40px 0;}
+.feature-card{background:var(--white);border-radius:20px;padding:24px 16px;text-align:center;box-shadow:0 2px 16px rgba(255,107,157,0.1);border:1px solid var(--pink-light);}
+.feature-icon{font-size:36px;margin-bottom:12px;}
+.feature-title{font-size:13px;font-weight:700;color:var(--charcoal);margin-bottom:6px;}
+.feature-desc{font-size:12px;color:var(--gray);line-height:1.6;}
+.disclaimer{background:var(--pink-pale);border-left:3px solid var(--pink-light);border-radius:0 10px 10px 0;padding:14px 18px;font-size:12px;color:var(--gray);line-height:1.7;margin-top:24px;}
+
+/* === 診断画面：スクロール形式 === */
+#screen-quiz{padding:40px 0 80px;}
+
+.quiz-header{text-align:center;margin-bottom:40px;}
+.quiz-title{font-family:'Noto Serif JP',serif;font-size:22px;color:var(--charcoal);margin-bottom:8px;}
+.quiz-sub{font-size:13px;color:var(--gray);}
+
+.axis-section{margin-bottom:40px;}
+.axis-label{
+  font-size:12px;font-weight:700;letter-spacing:0.15em;
+  text-transform:uppercase;color:var(--pink);
+  background:var(--pink-pale);border-left:3px solid var(--pink);
+  padding:8px 16px;border-radius:0 8px 8px 0;
+  margin-bottom:16px;display:inline-block;
+}
+
+.q-row{
+  background:var(--white);
+  border-radius:16px;
+  padding:20px 24px;
+  margin-bottom:12px;
+  border:1px solid var(--gray-light);
+  transition:border-color 0.2s;
+}
+.q-row.answered{border-color:var(--pink-light);}
+.q-text{font-size:15px;color:var(--charcoal);line-height:1.7;margin-bottom:16px;}
+
+/* 7段階ラジオ */
+.scale-wrap{display:flex;align-items:center;gap:0;}
+.scale-label{font-size:12px;color:var(--pink);font-weight:700;white-space:nowrap;min-width:64px;}
+.scale-label.right{text-align:right;color:var(--gray);}
+.scale-radios{display:flex;align-items:center;justify-content:space-between;flex:1;padding:0 8px;gap:4px;}
+.scale-btn{
+  width:36px;height:36px;border-radius:50%;
+  border:2px solid;cursor:pointer;
+  background:transparent;transition:all 0.15s;
+  flex-shrink:0;
+}
+/* 左側（そう思う）→ピンク */
+.scale-btn[data-pos="1"]{border-color:#FF6B9D;width:44px;height:44px;}
+.scale-btn[data-pos="2"]{border-color:#FF8FB5;width:40px;height:40px;}
+.scale-btn[data-pos="3"]{border-color:#FFB3CE;width:36px;height:36px;}
+/* 中央 */
+.scale-btn[data-pos="4"]{border-color:#D0C0C6;width:32px;height:32px;}
+/* 右側（そう思わない）→グレー紫 */
+.scale-btn[data-pos="5"]{border-color:#C4A8C0;width:36px;height:36px;}
+.scale-btn[data-pos="6"]{border-color:#A888A4;width:40px;height:40px;}
+.scale-btn[data-pos="7"]{border-color:#8B6888;width:44px;height:44px;}
+
+.scale-btn.selected[data-pos="1"],.scale-btn.selected[data-pos="2"],.scale-btn.selected[data-pos="3"]{background:var(--pink);}
+.scale-btn.selected[data-pos="4"]{background:#D0C0C6;}
+.scale-btn.selected[data-pos="5"],.scale-btn.selected[data-pos="6"],.scale-btn.selected[data-pos="7"]{background:#8B6888;}
+
+/* 進捗バー */
+.progress-fixed{
+  position:sticky;top:0;z-index:100;
+  background:rgba(255,251,253,0.95);
+  backdrop-filter:blur(8px);
+  padding:12px 20px;
+  border-bottom:1px solid var(--pink-light);
+}
+.progress-inner{max-width:760px;margin:0 auto;display:flex;align-items:center;gap:12px;}
+.progress-text{font-size:13px;color:var(--gray);white-space:nowrap;}
+.progress-bar{flex:1;height:6px;background:var(--gray-light);border-radius:6px;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--pink-light),var(--pink));border-radius:6px;transition:width 0.3s;}
+.progress-count{font-size:13px;font-weight:700;color:var(--pink);white-space:nowrap;}
+
+.btn-submit-wrap{text-align:center;margin-top:32px;}
+.btn-submit{
+  padding:18px 64px;
+  background:linear-gradient(135deg,var(--pink),#FF8FB5);
+  color:#fff;border:none;border-radius:40px;
+  font-family:'Noto Sans JP',sans-serif;
+  font-size:17px;font-weight:700;cursor:pointer;
+  box-shadow:0 4px 20px rgba(255,107,157,0.35);
+  transition:all 0.15s;
+}
+.btn-submit:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(255,107,157,0.45);}
+.btn-submit:disabled{opacity:0.4;cursor:not-allowed;transform:none;}
+.submit-note{font-size:12px;color:var(--gray);margin-top:12px;}
+
+/* 結果画面 */
+#screen-result{padding:32px 0 80px;}
+
+/* 診察券カード */
+.clinic-card{
+  background:var(--white);
+  border-radius:20px;
+  overflow:hidden;
+  box-shadow:0 8px 40px rgba(255,107,157,0.15);
+  margin-bottom:24px;
+  border:1px solid var(--pink-light);
+}
+.clinic-card-header{
+  background:linear-gradient(135deg,#FF6B9D,#FF8FB5);
+  padding:16px 28px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.clinic-name{font-size:13px;font-weight:700;color:rgba(255,255,255,0.9);letter-spacing:0.1em;}
+.clinic-no{font-size:12px;color:rgba(255,255,255,0.7);}
+
+.clinic-card-body{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:0;
+}
+.clinic-left{
+  padding:28px;
+  border-right:1px dashed var(--pink-light);
+  text-align:center;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+}
+.clinic-type-icon{font-size:56px;line-height:1;}
+.clinic-type-code{
+  font-family:'Noto Serif JP',serif;
+  font-size:44px;font-weight:700;
+  color:var(--charcoal);letter-spacing:0.08em;
+}
+.clinic-type-name{font-size:14px;color:var(--gray);}
+.clinic-dept-badge{
+  background:var(--pink);color:#fff;
+  border-radius:20px;padding:6px 20px;
+  font-size:14px;font-weight:700;
+  box-shadow:0 2px 10px rgba(255,107,157,0.3);
+}
+
+.clinic-right{padding:24px 28px;display:flex;flex-direction:column;gap:14px;}
+.clinic-section{}
+.clinic-section-title{
+  font-size:10px;letter-spacing:0.15em;
+  color:var(--pink);font-weight:700;
+  margin-bottom:5px;
+}
+.clinic-section-text{font-size:13px;color:var(--charcoal);line-height:1.7;}
+
+.clinic-card-footer{
+  border-top:1px dashed var(--pink-light);
+  padding:18px 28px;
+  background:var(--pink-pale);
+  display:flex;align-items:flex-start;gap:14px;
+}
+.clinic-footer-icon{font-size:32px;flex-shrink:0;}
+.clinic-footer-label{font-size:10px;letter-spacing:0.1em;color:var(--pink);font-weight:700;margin-bottom:4px;}
+.clinic-footer-text{font-size:13px;color:var(--charcoal);line-height:1.7;}
+
+/* 相性カード */
+.compat-card{
+  background:var(--white);border:2px solid var(--gold-light);
+  border-radius:20px;padding:24px 28px;
+  margin-bottom:16px;
+  box-shadow:0 2px 12px rgba(212,168,67,0.1);
+  text-align:center;
+}
+.compat-header{display:flex;flex-direction:column;align-items:center;gap:8px;margin-bottom:12px;}
+.compat-icon{font-size:48px;}
+.compat-label{font-size:10px;letter-spacing:0.15em;color:var(--gold);font-weight:700;}
+.compat-type{font-family:'Noto Serif JP',serif;font-size:26px;font-weight:700;color:var(--charcoal);}
+.compat-dept{display:inline-block;font-size:13px;color:var(--gold);font-weight:700;background:var(--gold-light);padding:3px 12px;border-radius:20px;}
+.compat-reason{font-size:13px;color:var(--gray);line-height:1.8;text-align:left;}
+
+/* 広告枠 */
+.ad-section{margin-bottom:16px;}
+.ad-label{font-size:10px;color:var(--gray);text-align:center;margin-bottom:6px;letter-spacing:0.05em;}
+.ad-slot-adsense{
+  background:var(--white);
+  border:1px dashed #ccc;
+  border-radius:12px;
+  min-height:100px;
+  display:flex;align-items:center;justify-content:center;
+  color:#bbb;font-size:12px;
+  /* Google AdSenseのスクリプトをここに追加 */
+}
+.ad-slot-a8{
+  background:var(--white);
+  border:1px dashed var(--pink-light);
+  border-radius:12px;
+  min-height:80px;
+  display:flex;align-items:center;justify-content:center;
+  color:#bbb;font-size:12px;
+  margin-top:10px;
+  /* A8.netのアフィリエイトバナーをここに追加 */
+}
+
+.btn-retry{width:100%;padding:16px;background:var(--white);border:2px solid var(--pink);border-radius:16px;font-family:'Noto Sans JP',sans-serif;font-size:15px;font-weight:700;color:var(--pink);cursor:pointer;transition:all 0.15s;margin-top:8px;}
+.btn-retry:hover{background:var(--pink-pale);}
+footer{text-align:center;padding:40px 24px;font-size:12px;color:var(--gray);border-top:1px solid var(--gray-light);margin-top:40px;}
+footer a{color:var(--gray);text-decoration:none;}
+footer a:hover{color:var(--pink);}
+@media(max-width:600px){
+  .features{grid-template-columns:1fr;}
+  .scale-label{min-width:48px;font-size:11px;}
+  .scale-btn[data-pos="1"]{width:36px;height:36px;}
+  .scale-btn[data-pos="2"]{width:32px;height:32px;}
+  .scale-btn[data-pos="3"]{width:28px;height:28px;}
+  .scale-btn[data-pos="4"]{width:26px;height:26px;}
+  .scale-btn[data-pos="5"]{width:28px;height:28px;}
+  .scale-btn[data-pos="6"]{width:32px;height:32px;}
+  .scale-btn[data-pos="7"]{width:36px;height:36px;}
+  .clinic-card-body{grid-template-columns:1fr;}
+  .clinic-left{border-right:none;border-bottom:1px dashed var(--pink-light);}
+  .clinic-type-code{font-size:36px;}
+  .compat-header{flex-direction:column;gap:8px;}
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>医者と結婚するなら？<br><span class="accent">相性の良い診療科</span>診断</h1>
+  <p class="hero-sub">20問に答えるだけで、あなたの性格タイプと相性の良いドクターの診療科がわかります。</p>
+  <button class="btn-primary" onclick="showScreen('start')">診断をはじめる 💊</button>
+</div>
+
+<!-- スタート -->
+<div id="screen-start" class="screen">
+  <div class="container">
+    <div class="features">
+      <div class="feature-card"><div class="feature-icon">🔍</div><div class="feature-title">16タイプ診断</div><div class="feature-desc">心理学の4軸で分類される16タイプで診断</div></div>
+      <div class="feature-card"><div class="feature-icon">💌</div><div class="feature-title">恋愛傾向分析</div><div class="feature-desc">強み・弱み・相性の良いタイプを分析</div></div>
+      <div class="feature-card"><div class="feature-icon">🏥</div><div class="feature-title">診療科おすすめ</div><div class="feature-desc">相性の良いドクターの診療科がわかる</div></div>
+    </div>
+    <button class="btn-primary" onclick="startQuiz()" style="width:100%;display:block;text-align:center;">診断スタート（全20問）💊</button>
+    <div class="disclaimer">⚠️ この診断はエンターテインメント目的です。医療診断・医療アドバイスではありません。</div>
+  </div>
+</div>
+
+<!-- 診断（スクロール形式） -->
+<div id="screen-quiz" class="screen">
+  <!-- 固定プログレスバー -->
+  <div class="progress-fixed">
+    <div class="progress-inner">
+      <span class="progress-text">回答済み</span>
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+      <span class="progress-count"><span id="answered-count">0</span> / 20</span>
+    </div>
+  </div>
+
+  <div class="container" style="padding-top:32px;">
+    <div class="quiz-header">
+      <div class="quiz-title">あなたに当てはまるものを選んでください</div>
+      <div class="quiz-sub">全20問・スクロールして回答できます</div>
+    </div>
+    <div id="quiz-body"></div>
+    <div class="btn-submit-wrap">
+      <button class="btn-submit" id="btn-submit" onclick="submitQuiz()" disabled>結果を見る 💊</button>
+      <p class="submit-note">全20問に回答すると結果が表示されます</p>
+    </div>
+  </div>
+</div>
+
+<!-- 結果 -->
+<div id="screen-result" class="screen">
+  <div class="container">
+
+    <!-- 診察券カード -->
+    <div class="clinic-card">
+      <div class="clinic-card-header">
+        <span class="clinic-name">🏥 恋愛タイプ診断　診察券</span>
+        <span class="clinic-no" id="clinic-no"></span>
+      </div>
+      <div class="clinic-card-body">
+        <!-- 左：タイプ情報 -->
+        <div class="clinic-left">
+          <div class="clinic-type-icon" id="result-icon"></div>
+          <div class="clinic-type-code" id="result-type"></div>
+          <div class="clinic-type-name" id="result-type-name"></div>
+          <div class="clinic-dept-badge" id="result-dept"></div>
+        </div>
+        <!-- 右：恋愛傾向・強み・弱み -->
+        <div class="clinic-right">
+          <div class="clinic-section">
+            <div class="clinic-section-title">恋愛傾向</div>
+            <p class="clinic-section-text" id="result-tendency"></p>
+          </div>
+          <div class="clinic-section">
+            <div class="clinic-section-title">恋愛の強み</div>
+            <p class="clinic-section-text" id="result-strength"></p>
+          </div>
+          <div class="clinic-section">
+            <div class="clinic-section-title">恋愛の弱み</div>
+            <p class="clinic-section-text" id="result-weakness"></p>
+          </div>
+        </div>
+      </div>
+      <!-- フッター：診療科からのひとこと -->
+      <div class="clinic-card-footer">
+        <div class="clinic-footer-icon" id="result-dept-icon"></div>
+        <div>
+          <div class="clinic-footer-label">🏥 診療科からのひとこと</div>
+          <p class="clinic-footer-text" id="result-dept-comment"></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 相性カード -->
+    <div class="compat-card">
+      <div class="compat-header">
+        <div class="compat-icon" id="result-compat-icon"></div>
+        <div class="compat-label">💑 最も相性の良いタイプ</div>
+        <div class="compat-type" id="result-compat-type"></div>
+        <div class="compat-dept" id="result-compat-dept"></div>
+      </div>
+      <p class="compat-reason" id="result-compat-reason"></p>
+    </div>
+
+    <!-- 広告枠①：Google AdSense -->
+    <div class="ad-section">
+      <div class="ad-label">PR</div>
+      <div class="ad-slot-adsense">
+        <!-- ここにGoogle AdSenseのコードを貼り付けてください -->
+        Google AdSense 広告枠
+      </div>
+    </div>
+
+    <!-- 広告枠②：A8.net アフィリエイト -->
+    <div class="ad-section">
+      <div class="ad-label">PR</div>
+      <div class="ad-slot-a8">
+        <!-- ここにA8.netのアフィリエイトバナーを貼り付けてください -->
+        A8.net アフィリエイト枠
+      </div>
+    </div>
+
+    <button class="btn-retry" onclick="retryQuiz()">🔄 もう一度診断する</button>
+  </div>
+</div>
+
+<footer>
+  <p>© 2026 医者と結婚するなら？相性の良い診療科診断 ｜ <a href="privacy.html">プライバシーポリシー</a> ｜ <a href="contact.html">お問い合わせ</a></p>
+  <p style="margin-top:8px;">※この診断はエンターテインメント目的です。医療診断ではありません。</p>
+</footer>
+
+<script>
+const QUESTIONS=[
+  {axisLabel:'エネルギーの向き',text:'初対面の人と話すのは得意な方だ。',direction:'E'},
+  {axisLabel:'エネルギーの向き',text:'週末は友人と過ごすより、一人でゆっくりしたい。',direction:'I'},
+  {axisLabel:'エネルギーの向き',text:'大勢でいると自然とテンションが上がる。',direction:'E'},
+  {axisLabel:'エネルギーの向き',text:'考えをまとめるとき、誰かに話しながら整理するより一人で考えたい。',direction:'I'},
+  {axisLabel:'エネルギーの向き',text:'パーティーや飲み会の後より、静かな時間の後の方が元気になれる。',direction:'I'},
+  {axisLabel:'情報の受け取り方',text:'計画を立てるとき、実績や過去の経験を重視する。',direction:'S'},
+  {axisLabel:'情報の受け取り方',text:'「なんとなくこうなる気がする」という直感を信じることが多い。',direction:'N'},
+  {axisLabel:'情報の受け取り方',text:'細かいことより、全体の流れやビジョンの方が気になる。',direction:'N'},
+  {axisLabel:'情報の受け取り方',text:'旅行の計画は、ガイドブック通りより自分の目で見たものを信じる。',direction:'S'},
+  {axisLabel:'情報の受け取り方',text:'アイデアを考えるとき、現実的にできるかより面白いかを先に考える。',direction:'N'},
+  {axisLabel:'判断の仕方',text:'友人が悩みを相談してきたとき、まず解決策を提案したくなる。',direction:'T'},
+  {axisLabel:'判断の仕方',text:'誰かと意見が対立したとき、相手の気持ちより正しいかどうかを優先する。',direction:'T'},
+  {axisLabel:'判断の仕方',text:'映画や本を見て泣くことがよくある。',direction:'F'},
+  {axisLabel:'判断の仕方',text:'物事を判断するとき、データや根拠を確認してから決める。',direction:'T'},
+  {axisLabel:'判断の仕方',text:'誰かが悲しんでいると、自分まで気持ちが沈んでしまう。',direction:'F'},
+  {axisLabel:'生活スタイル',text:'旅行や予定は、事前にしっかり計画を立てないと落ち着かない。',direction:'J'},
+  {axisLabel:'生活スタイル',text:'締め切りより早く物事を終わらせる方が気持ちいい。',direction:'J'},
+  {axisLabel:'生活スタイル',text:'予定が急に変わっても、わりと柔軟に対応できる。',direction:'P'},
+  {axisLabel:'生活スタイル',text:'やることリストを作って、一つずつこなしていくのが好きだ。',direction:'J'},
+  {axisLabel:'生活スタイル',text:'決めすぎると息苦しく感じる。ある程度は流れに任せたい。',direction:'P'},
+];
+
+// スコア: pos1=+3, pos2=+2, pos3=+1, pos4=0, pos5=-1, pos6=-2, pos7=-3
+const POS_SCORES=[3,2,1,0,-1,-2,-3];
+
+const DEPT_ICONS={'眼科':'👁️','神経内科':'🧠','消化器内科':'💪','美容外科':'✨','総合内科':'🏥','精神科・心療内科':'🌿','外科':'🔪','整形外科':'🦴','腎臓内科':'💧','呼吸器内科':'🌬️','循環器内科':'❤️','産婦人科':'🌸','感染症科':'🛡️','皮膚科':'🌺','救急科':'🚨','泌尿器科':'⚡'};
+
+const TYPES={
+  INTJ:{name:'建築家',dept:'眼科',deptComment:'誰も気づかない本質を見抜く洞察力の持ち主。その鋭い目を定期的にメンテナンスしておきましょう。',tendency:'感情表現は少ないが、一度愛すると深く真剣に向き合う。相手に高い知性と自立を求め、計画的に関係を築いていく。',strength:'長期的なビジョンを持って関係を育てる。浮気や軽い恋愛には興味がなく、誠実。',weakness:'感情表現が少なすぎて相手に冷たく見られがち。完璧主義が相手へのプレッシャーになることも。',compatType:'ENFP',compatDept:'整形外科',compatReason:'整形外科の自由な発想と明るさが眼科の世界を広げ、眼科の安定感が整形外科の軸になる。正反対だからこそ補い合える。'},
+  INTP:{name:'論理学者',dept:'神経内科',deptComment:'考えすぎて頭がフル回転しているあなた。神経内科で一度、脳のメンテナンスを。',tendency:'感情より理屈で関係を考えがち。距離感を大切にし、束縛を極端に嫌う。好きでも言葉にするのが苦手。',strength:'一度信頼した相手には深くコミット。知的な会話で相手を楽しませられる。',weakness:'感情表現が少なく、相手が「愛されていない」と感じやすい。議論になると論破しようとしてしまう。',compatType:'ENFJ',compatDept:'外科',compatReason:'外科の温かさと積極的な愛情表現が神経内科の感情面を自然に引き出してくれる。'},
+  ENTJ:{name:'指揮官',dept:'消化器内科',deptComment:'理詰めと直感を使い分けるハードワーカー。胃腸はストレスのバロメーター。酷使する前に診てもらって。',tendency:'恋愛でもリードしたがる。効率を重視し、感情的なやり取りが苦手。目標に向かって二人で進みたいタイプ。',strength:'頼りになる存在感。相手を引っ張る力があり、一緒にいると安心感がある。',weakness:'支配的になりすぎることがある。相手の感情ペースに合わせるのが苦手。',compatType:'INFP',compatDept:'精神科・心療内科',compatReason:'精神科・心療内科の豊かな感情とやわらかさが消化器内科に人間味をもたらし、消化器内科の力強さが精神科・心療内科を守る。'},
+  ENTP:{name:'討論者',dept:'美容外科',deptComment:'自分の思うがままに生きるあなた。外見も内面も、自分らしく整えていきましょう。',tendency:'議論と刺激を求める。知的な相手でないと続かない。飽き性な面があるが、本気になると驚くほど深くなれる。',strength:'会話が面白く、一緒にいて飽きない。新しいアイデアで関係に刺激を与え続けられる。',weakness:'相手の感情より議論を優先しがち。興味を失うと急速に冷める。',compatType:'INFJ',compatDept:'総合内科',compatReason:'総合内科の深さと洞察力が美容外科の好奇心を満たし続ける。総合内科だけが美容外科の本当の内面を理解できる。'},
+  INFJ:{name:'提唱者',dept:'総合内科',deptComment:'やわらかい包容力で人を受け入れるあなた。まずは自分自身の全体的な健康を確認してみて。',tendency:'深い精神的つながりを求める。表面的な関係では満足できず、魂レベルで通じ合える相手を探している。',strength:'相手の気持ちを深く理解し、寄り添える。長期的な関係を大切に育てる。',weakness:'理想が高すぎて現実の相手に失望しやすい。傷つくと長く引きずる。',compatType:'ENTP',compatDept:'美容外科',compatReason:'美容外科の知的刺激が総合内科の深い世界を揺さぶり、総合内科の洞察が美容外科の本質を見抜く。'},
+  INFP:{name:'仲介者',dept:'精神科・心療内科',deptComment:'繊細な感情を大切にするあなた。心のメンテナンスは専門家に任せてみて。',tendency:'理想の愛を追いかける夢想家。感情移入が強く、相手の痛みを自分のことのように感じる。',strength:'純粋で誠実な愛情を注ぐ。相手を深く理解しようとする姿勢が相手の心を開かせる。',weakness:'傷つくと回復に時間がかかる。理想と現実のギャップに苦しむことが多い。',compatType:'ENFJ',compatDept:'外科',compatReason:'外科の包容力が精神科・心療内科を守り、安心して自分を出せる環境を作ってくれる。'},
+  ENFJ:{name:'主人公',dept:'外科',deptComment:'相手のために迷わず動ける献身的なあなた。外科医のように決断力があり、人を助けることに躊躇しない。',tendency:'相手を全力でサポートする献身型。相手の幸せを自分の幸せと感じられる。',strength:'愛情表現が豊かで、相手を大切にしていることが伝わる。関係を深めるのが上手。',weakness:'自分を犠牲にしすぎる。見返りを求めなさすぎて、疲弊してしまうことがある。',compatType:'INFP',compatDept:'精神科・心療内科',compatReason:'精神科・心療内科の純粋さが外科の献身をまっすぐ受け取り、互いに感謝し合える関係になれる。'},
+  ENFP:{name:'広報活動家',dept:'整形外科',deptComment:'熱しやすく冷めやすいあなた。感情の激しい動きで体も酷使しがち。骨格から整えてみて。',tendency:'熱しやすく冷めやすい。恋に落ちると全力で突き進むが、束縛されると急速に冷める。',strength:'恋愛初期の情熱と盛り上げ力は抜群。相手を特別な気持ちにさせるのが上手。',weakness:'長続きさせるには意識的な努力が必要。飽きてしまうと関係が一気に冷える。',compatType:'INTJ',compatDept:'眼科',compatReason:'眼科の安定感と深さが整形外科の軸になり、整形外科の明るさが眼科の世界を広げる。'},
+  ISTJ:{name:'管理者',dept:'腎臓内科',deptComment:'約束を必ず守り、黙々と責任を果たすあなた。腎臓のように体の均衡を保つ縁の下の力持ち。',tendency:'誠実で真面目。感情表現は少ないが、一度決めたら揺るがない。安定した関係を好む。',strength:'約束を必ず守る。長期的に安定した関係を築ける信頼感がある。',weakness:'変化を嫌いすぎて関係がマンネリになりやすい。感情表現の少なさで相手が不安になることも。',compatType:'ESFP',compatDept:'泌尿器科',compatReason:'泌尿器科の明るさと自由さが腎臓内科の堅さをほぐし、腎臓内科の誠実さが泌尿器科を安心させる。'},
+  ISFJ:{name:'擁護者',dept:'呼吸器内科',deptComment:'家族や大切な人を守ることを優先するあなた。深呼吸して、自分のペースも大切にして。',tendency:'献身的で相手を優先しすぎる。感謝されないと静かに傷つくが、文句は言えない。',strength:'相手の細かい変化に気づき、さりげなくサポートできる。安心感と温かさを与える。',weakness:'自分の気持ちを後回しにしすぎる。不満を溜め込んでいつか爆発することがある。',compatType:'ESTP',compatDept:'救急科',compatReason:'救急科の行動力と明るさが呼吸器内科の世界を広げ、呼吸器内科の温かさが救急科を落ち着かせる。'},
+  ESTJ:{name:'幹部',dept:'循環器内科',deptComment:'責任感が強く頼りになるあなた。心臓に負担をかけすぎていませんか。定期的なチェックを。',tendency:'責任感が強く、頼りになる存在。ルールと秩序を大切にし、感情的なやり取りが苦手。',strength:'安定した生活を提供できる。約束を守り、パートナーを守ろうとする強さがある。',weakness:'感情的な相手への対応が苦手。正論を言いすぎて相手を傷つけることがある。',compatType:'ISFP',compatDept:'皮膚科',compatReason:'皮膚科の柔らかさと感性が循環器内科の硬さを和らげ、循環器内科の安定感が皮膚科を守る。'},
+  ESFJ:{name:'領事',dept:'産婦人科',deptComment:'愛情表現が豊かで、人を包み込む温かさを持つあなた。自分自身を大切にすることも忘れずに。',tendency:'愛情表現が豊か。人の気持ちに敏感で、嫌われることを非常に恐れる。',strength:'相手に愛されていると感じさせるのが上手。関係を温かく育てる力がある。',weakness:'嫌われることへの恐れから、自分を犠牲にしてしまいがち。相手に依存しやすい。',compatType:'ISTP',compatDept:'感染症科',compatReason:'感染症科の落ち着きと安定感が産婦人科の不安をやさしく和らげてくれる。'},
+  ISTP:{name:'巨匠',dept:'感染症科',deptComment:'ルールに細かく、リスク管理が得意なあなた。感染症対策も完璧にこなしていそう。',tendency:'干渉されることを嫌う自由人。感情表現は少ないが、行動で愛情を示す。',strength:'いざというとき頼りになる。クールに見えて、実は相手をしっかり観察している。',weakness:'言葉での愛情表現がほぼない。相手が「愛されているか」不安になりやすい。',compatType:'ESFJ',compatDept:'産婦人科',compatReason:'産婦人科の積極的な愛情表現が感染症科の寡黙さを補い、感染症科の落ち着きが産婦人科を安心させる。'},
+  ISFP:{name:'冒険家',dept:'皮膚科',deptComment:'細かいところに目配りができる物静かな優しい人。ストレスは肌に出やすいので早めのケアを。',tendency:'感情豊かだが口に出さない。自分のペースを大切にし、束縛を嫌う。芸術的な感性を持つ。',strength:'相手の感情に寄り添える。さりげない気遣いで相手を大切にする。',weakness:'言葉にできない感情を溜め込みやすい。自分の気持ちを伝えるのが苦手。',compatType:'ENFJ',compatDept:'外科',compatReason:'外科の包容力が皮膚科の感情をそっと引き出し、安心して甘えられる関係になれる。'},
+  ESTP:{name:'起業家',dept:'救急科',deptComment:'行動力と明るさで突き進むあなた。無茶をしすぎて救急のお世話にならないように。',tendency:'行動力があり積極的。退屈を嫌い、刺激的な恋愛を好む。リスクを恐れず突き進む。',strength:'積極的なアプローチで相手をときめかせる。一緒にいると楽しいことが次々起きる。',weakness:'飽きやすく、長続きさせるには意識的な努力が必要。衝動的な行動で相手を傷つけることも。',compatType:'ISFJ',compatDept:'呼吸器内科',compatReason:'呼吸器内科の安定感と献身が救急科の衝動をやさしく受け止め、救急科の行動力が呼吸器内科の世界を広げる。'},
+  ESFP:{name:'エンターテイナー',dept:'泌尿器科',deptComment:'愛情表現が豊かで今この瞬間を大切にするあなた。体のメンテナンスも今すぐ始めて。',tendency:'明るく愛情表現が豊か。今この瞬間を大切にする。将来の計画より今の楽しさを優先する。',strength:'恋愛を楽しくする天才。相手を笑顔にする力がある。',weakness:'将来の計画が苦手。衝動的に動きすぎて後悔することがある。',compatType:'ISTJ',compatDept:'腎臓内科',compatReason:'腎臓内科の堅実さと誠実さが泌尿器科の生活に安定をもたらし、泌尿器科の明るさが腎臓内科をほぐす。'},
+};
+
+const ADS=['💊 健康診断の予約はこちら','🏥 オンライン診療で気軽に相談','📱 健康管理アプリで毎日の記録を'];
+
+// answers[i] = 1〜7 or null
+let answers=new Array(20).fill(null);
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-'+id).classList.add('active');
+  window.scrollTo({top:document.querySelector('.hero').offsetHeight,behavior:'smooth'});
+}
+
+function startQuiz(){
+  answers=new Array(20).fill(null);
+  buildQuiz();
+  showScreen('quiz');
+}
+
+function buildQuiz(){
+  const body=document.getElementById('quiz-body');
+  body.innerHTML='';
+  let currentAxis='';
+  QUESTIONS.forEach((q,i)=>{
+    if(q.axisLabel!==currentAxis){
+      currentAxis=q.axisLabel;
+      const axisEl=document.createElement('div');
+      axisEl.className='axis-section';
+      axisEl.innerHTML=`<span class="axis-label">${currentAxis}</span>`;
+      body.appendChild(axisEl);
+    }
+    const lastAxis=body.lastElementChild;
+    const row=document.createElement('div');
+    row.className='q-row';
+    row.id='q-row-'+i;
+    row.innerHTML=`
+      <p class="q-text">${i+1}. ${q.text}</p>
+      <div class="scale-wrap">
+        <span class="scale-label">そう思う</span>
+        <div class="scale-radios" id="scale-${i}">
+          ${[1,2,3,4,5,6,7].map(p=>`<button class="scale-btn" data-pos="${p}" data-q="${i}" onclick="selectScale(${i},${p})"></button>`).join('')}
+        </div>
+        <span class="scale-label right">そう思わない</span>
+      </div>`;
+    lastAxis.appendChild(row);
+  });
+}
+
+function selectScale(qi,pos){
+  answers[qi]=pos;
+  // ボタン更新
+  document.querySelectorAll(`#scale-${qi} .scale-btn`).forEach(btn=>{
+    btn.classList.toggle('selected',parseInt(btn.dataset.pos)===pos);
+  });
+  document.getElementById('q-row-'+qi).classList.add('answered');
+  updateProgress();
+}
+
+function updateProgress(){
+  const count=answers.filter(a=>a!==null).length;
+  document.getElementById('answered-count').textContent=count;
+  document.getElementById('progress-fill').style.width=(count/20*100)+'%';
+  document.getElementById('btn-submit').disabled=count<20;
+}
+
+function submitQuiz(){
+  const sc={E:0,I:0,S:0,N:0,T:0,F:0,J:0,P:0};
+  const opp={E:'I',I:'E',S:'N',N:'S',T:'F',F:'T',J:'P',P:'J'};
+  QUESTIONS.forEach((q,i)=>{
+    const s=POS_SCORES[answers[i]-1]; // pos1→+3, pos7→-3
+    if(s>0)sc[q.direction]+=s;
+    else if(s<0)sc[opp[q.direction]]+=Math.abs(s);
+  });
+  const type=(sc.E>=sc.I?'E':'I')+(sc.S>=sc.N?'S':'N')+(sc.T>=sc.F?'T':'F')+(sc.J>=sc.P?'J':'P');
+  showResult(type);
+}
+
+function showResult(type){
+  const d=TYPES[type];
+  const icon=DEPT_ICONS[d.dept]||'🏥';
+  const compatIcon=DEPT_ICONS[d.compatDept]||'🏥';
+  const no='No. '+String(Math.floor(Math.random()*9000)+1000);
+  document.getElementById('clinic-no').textContent=no;
+  document.getElementById('result-icon').textContent=icon;
+  document.getElementById('result-type').textContent=type;
+  document.getElementById('result-type-name').textContent=d.name;
+  document.getElementById('result-dept').textContent=d.dept;
+  document.getElementById('result-tendency').textContent=d.tendency;
+  document.getElementById('result-strength').textContent=d.strength;
+  document.getElementById('result-weakness').textContent=d.weakness;
+  document.getElementById('result-compat-icon').textContent=compatIcon;
+  document.getElementById('result-compat-type').textContent=d.compatType;
+  document.getElementById('result-compat-dept').textContent='おすすめ診療科：'+d.compatDept;
+  document.getElementById('result-compat-reason').textContent=d.compatReason;
+  document.getElementById('result-dept-icon').textContent=icon;
+  document.getElementById('result-dept-comment').textContent=d.deptComment;
+  showScreen('result');
+}
+
+function retryQuiz(){startQuiz();}
+showScreen('start');
+</script>
+</body>
+</html>
